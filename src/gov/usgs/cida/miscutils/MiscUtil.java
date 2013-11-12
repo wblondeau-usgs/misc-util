@@ -542,37 +542,29 @@ public class MiscUtil
      * Constructs a parameter String from a parameter map. Leaves the initial
      * demarcator off, since it does not have sufficient information to know
      * whether to write "?" or "&". Trims leading and trailing space from
-     * parameter names and values and then URLencodes them.
+     * parameter names and values and then URLencodes the values.
      *
      * When a parameter has multiple values (i.e. its
-     * <code>List<String>.size()</code> > 1), the values are comma-separated.
+     * <code>List<String>.size()</code> > 1), the values are separately
+     * given with a repeated parameter name.
      *
      * @param params
      * @return
      */
     public static String makeParameterString (Map<String, List<String>> params)
     {
-
         String retval = "";
         for (String currentkey : params.keySet ())
         {
-            retval += urlencode (currentkey) + "=";
             for (String item : params.get (currentkey))
             {
+                retval += currentkey + "=";
                 String trimmed = urlencode (item.trim ());
-                if ( ! trimmed.isEmpty ())
-                {
-                    retval += trimmed + ",";
-                }
+                retval += trimmed;
+                retval += "&";
             }
-            // remove trailing comma
-            if (retval.endsWith (","))
-            {
-                retval = retval.substring (0, retval.length () - 1);
-            }
-            retval += "&";
         }
-        // remove trailing &
+        // remove trailing & from parameter string
         retval = retval.substring (0, retval.length () - 1);
 
         return retval;
